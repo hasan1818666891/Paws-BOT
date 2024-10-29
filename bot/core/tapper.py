@@ -69,7 +69,7 @@ class Tapper:
 
                     await asyncio.sleep(fls + 3)
 
-            self.refer_id = choices([settings.REF_ID, get_link_code()], weights=[40, 60], k=1)[0]
+            self.refer_id = choices([settings.REF_ID, get_link_code()], weights=[70, 30], k=1)[0]
             
             web_view = await self.tg_client.invoke(RequestAppWebView(
                 peer=peer,
