@@ -59,6 +59,7 @@ class Tapper:
                     
             while True:
                 try:
+                    await self.tg_client.get_chat('PAWSOG_bot') # Attempt to get chat to ensure the peer is cached
                     peer = await self.tg_client.resolve_peer('PAWSOG_bot')
                     break
                 except FloodWait as fl:
@@ -146,6 +147,8 @@ class Tapper:
             await asyncio.sleep(delay=5)
             while True:
                 try:
+                    # Ensure the chat peer is cached before invoking settings
+                    await self.tg_client.get_chat(chat.id)
                     peer = await self.tg_client.resolve_peer(chat.id)
                     break
                 except FloodWait as fl:
@@ -159,10 +162,10 @@ class Tapper:
                 account.UpdateNotifySettings(
                     peer=InputNotifyPeer(peer=peer), settings=InputPeerNotifySettings(mute_until=2147483647)
                 )
-            )
+            ) # Mute the chat notifications
             logger.info(f"{self.session_name} | Successfully muted chat <g>{chat.title}</g> for channel <y>{parsed_link}</y>")
             await asyncio.sleep(delay=3)
-            await self.tg_client.archive_chats(chat_ids=[chat.id])
+            await self.tg_client.archive_chats(chat_ids=[chat.id]) # Archive the chat
             logger.info(f"{self.session_name} | Channel <g>{chat.title}</g> successfully archived for channel <y>{parsed_link}</y>")
             
             if self.tg_client.is_connected:
