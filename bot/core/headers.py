@@ -4,7 +4,7 @@ headers = {
   'Accept-Encoding': "gzip, deflate, br, zstd",
   'Content-Type': "application/json",
   'sec-ch-ua-platform': "\"Android\"",
-  'sec-ch-ua': "\"Android WebView\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\"",
+  'sec-ch-ua': "\"Chromium\";v=\"130\", \"Android WebView\";v=\"130\", \"Not?A_Brand\";v=\"99\"",
   'sec-ch-ua-mobile': "?1",
   'origin': "https://app.paws.community",
   'x-requested-with': "org.telegram.messenger",
