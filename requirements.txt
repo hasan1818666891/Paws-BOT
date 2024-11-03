@@ -35,3 +35,4 @@ zope.interface==6.4.post2
 aiofiles~=24.1.0
 Brotli~=1.1.0
 art==6.3
+tonsdk==1.0.15
