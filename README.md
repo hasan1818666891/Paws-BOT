@@ -1,48 +1,54 @@
-[![Static Badge](https://img.shields.io/badge/Telegram-Bot%20Link-Link?style=for-the-badge&logo=Telegram&logoColor=white&logoSize=auto&color=blue)](https://t.me/PAWSOG_bot/PAWS?startapp=acAO24ki)
+# [![Static Badge](https://img.shields.io/badge/Telegram-Bot%20Link-Link?style=for-the-badge&logo=Telegram&logoColor=white&logoSize=auto&color=blue)](https://t.me/PAWSOG_bot/PAWS?startapp=acAO24ki)
 
-## Recommendation before use
+## PAWS Bot
 
-# 🔥🔥 Use PYTHON 3.10 🔥🔥
+> **Recommendation**: Use **Python 3.10**
 
+---
 
-## Features  
-| Feature                                                   | Supported |
-|-----------------------------------------------------------|:---------:|
-| Multithreading                                            |     ✅     |
-| Proxy binding to session                                  |     ✅     |
-| User-Agent binding to session                             |     ✅     |
-| Support for tdata / pyrogram .session  				  |     ✅     |
-| Registration in bot                                       |     ✅     |
-| Auto-tasks                                                |     ✅     |
-| Daily rewards                                             |     ✅     |
+## Features
+| Feature                           | Supported |
+|-----------------------------------|:---------:|
+| Multithreading                    |     ✅     |
+| Proxy binding to session          |     ✅     |
+| User-Agent binding to session     |     ✅     |
+| Support for `.tdata` and `.session` files | ✅     |
+| Registration in bot               |     ✅     |
+| Auto-tasks                        |     ✅     |
+| Auto blind wallets                |     ✅     |
+| Daily rewards                     |     ✅     |
 
-
+---
 
 ## [Settings](https://github.com/hasan1818666891/Paws-BOT/blob/master/.env-example/)
-| Settings                |                                 Description                                 |
-|-------------------------|:---------------------------------------------------------------------------:|
-| **API_ID / API_HASH**   | Platform data from which to run the Telegram session (by default - android) |
-| **SLEEP_TIME**          |           Sleep time between cycles (by default - [41200, 43200])            |
-| **START_DELAY**         |            Delay between sessions at start (by default - [5, 25])           |
-| **AUTO_TASK**           |                         Auto tasks (default - True)                         |
-| **JOIN_CHANNELS**       |              Auto-join for tg channels tasks (default - False)               |
-| **REF_ID**              |                          Ref link for registration                          |
+| Setting                | Description |
+|------------------------|-------------|
+| **API_ID / API_HASH**  | Platform data from which to run the Telegram session (default: Android) |
+| **SLEEP_TIME**         | Sleep time between cycles (default: `[41200, 43200]`) |
+| **START_DELAY**        | Delay between session starts (default: `[5, 25]`) |
+| **AUTO_TASK**          | Enable auto tasks (default: `True`) |
+| **AUTO_ADD_WALLET**    | Auto-add wallet and save to `wallets.json` with seed phrase and public key (default: `False`) |
+| **JOIN_CHANNELS**      | Auto-join Telegram channels for tasks (default: `False`) |
+| **REF_ID**             | Referral link for registration |
+
+---
 
 ## Quick Start 📚
 
-To fast install libraries and run bot - open run.bat on Windows or run.sh on Linux
+To install dependencies and run the bot quickly, use the provided batch file (`run.bat`) for Windows or the shell script (`run.sh`) for Linux.
 
-## Prerequisites
-Before you begin, make sure you have the following installed:
-- [Python](https://www.python.org/downloads/) **version 3.10**
+### Prerequisites
+Ensure you have **Python 3.10** installed.
 
-## Obtaining API Keys
-1. Go to my.telegram.org and log in using your phone number.
-2. Select "API development tools" and fill out the form to register a new application.
-3. Record the API_ID and API_HASH provided after registering your application in the .env file.
+### Obtaining API Keys
+1. Go to [my.telegram.org](https://my.telegram.org) and log in.
+2. Under **API development tools**, create a new application to get your `API_ID` and `API_HASH`, and add these to your `.env` file.
+
+---
 
 ## Installation
-You can download the [**repository**](https://github.com/hasan1818666891/Paws-BOT) by cloning it to your system and installing the necessary dependencies:
+
+### Clone the Repository
 ```shell
 git clone https://github.com/hasan1818666891/Paws-BOT
 cd Paws-BOT
@@ -100,20 +106,36 @@ You can also use arguments for quick start, for example:
 # 2 - Creates a session
 ```
 
-### Usages
-When you first launch the bot, create a session for it using the 'Creates a session' command. It will create a 'sessions' folder in which all accounts will be stored, as well as a file accounts.json with configurations.
-If you already have sessions, simply place them in a folder 'sessions' and run the clicker. During the startup process you will be able to configure the use of a proxy for each session.
-User-Agent is created automatically for each account.
+## Usage
+1. **First Launch**: Create a session with the `--action 2` option. This will create a `sessions` folder for storing all accounts and an `accounts.json` configuration file.
+2. **Existing Sessions**: If you already have sessions, add them to the `sessions` folder and run the bot with the clicker mode.
 
-Here is an example of what accounts.json should look like:
-```shell
+If `AUTO_ADD_WALLET` is enabled, TON wallets are automatically added to accounts, and wallet credentials (seed phrase, private key, public key) are backed up in `wallets.json`.
+
+### Example of `accounts.json`
+```json
 [
   {
     "session_name": "name_example",
     "user_agent": "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.165 Mobile Safari/537.36",
-    "proxy": "type://user:pass:ip:port"  # "proxy": "" - if you dont use proxy
+    "proxy": "type://user:pass:ip:port"  // "proxy": "" if no proxy
   }
 ]
+```
+### Example of `wallets.json`
+```json
+{
+    "xxxxxxxx": { 
+        "wallet": {
+            "mnemonic": "total feature answer mystery puzzle loyal spatial organ total feature answer mystery puzzle loyal spatial organ",
+            "wallet_address": "UQC6N66gCoOJEXpvTyp4DdODbK4GvC9QNXw30qxxxxxxxxxx",
+            "private_key": "xxxxxxxxxxx8b9db73b982021ee9e98f1bd8696b000ea87c95a2a7e98de1197194c7da2f961b10d5a8228efe55b4e8859ab7791xxxxxxxxxxxxxxx",
+            "public_key": "e98de1197194c7da2f961b10d5a8228efe55b4e8859ab7791xxxxxxxxxxxxxxx"
+        },
+        "session_name": "example.session",
+        "username": "telegram_username"
+    }
+}
 ```
 
 ### Contacts
