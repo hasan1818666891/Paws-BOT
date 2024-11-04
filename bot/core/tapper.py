@@ -23,7 +23,8 @@ from .headers import headers
 from bot.config import settings
 from bot.exceptions import InvalidSession
 
-from tonsdk.contract.wallet import Wallets, WalletVersionEnum
+if settings.AUTO_ADD_WALLET:
+    from tonsdk.contract.wallet import Wallets, WalletVersionEnum
 
 BASE_API = "https://api.paws.community/v1"
 
