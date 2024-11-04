@@ -308,7 +308,7 @@ class Tapper:
             if tasks:
                 for task in tasks:
                     if not task["progress"]['claimed'] and task['code'] not in settings.DISABLED_TASKS:
-                        if task['code'] == 'telegram':
+                        if "t.me" in str(task['data']):
                             if settings.JOIN_TG_CHANNELS:
                                 channellink = task['data']
                                 logger.info(f"{self.session_name} | Performing TG subscription to <lc>{channellink}</lc>")
