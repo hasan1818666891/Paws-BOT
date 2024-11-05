@@ -105,7 +105,12 @@ You can also use arguments for quick start, for example:
 # 1 - Run clicker
 # 2 - Creates a session
 ```
-
+## Extra help
+if you are facing any problem while installing `tonsdk` try this. it should work:
+```shell
+pkg install clang libffi openssl libsodium
+SODIUM_INSTALL=system pip install pynacl
+```
 ## Usage
 1. **First Launch**: Create a session with the `--action 2` option. This will create a `sessions` folder for storing all accounts and an `accounts.json` configuration file.
 2. **Existing Sessions**: If you already have sessions, add them to the `sessions` folder and run the bot with the clicker mode.
