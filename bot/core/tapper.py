@@ -58,25 +58,7 @@ class Tapper:
 
         try:
             async with self.tg_client:
-                try:
-                    self.peer = await self.tg_client.resolve_peer(self.bot_username)
-
-                except (KeyError,ValueError):
-                    await asyncio.sleep(delay=3)
-
-                except FloodWait as error:
-                    logger.warning(f"{self.session_name} | FloodWait error | Retry in <e>{error.value}</e> seconds")
-                    await asyncio.sleep(delay=error.value)
-
-                    # Attempt to update session db peer IDs by fetching dialogs
-                    peer_found = False
-                    async for dialog in self.tg_client.get_dialogs():
-                        if dialog.chat and dialog.chat.username and dialog.chat.username == self.bot_username:
-                            peer_found = True
-                            break
-                    if not peer_found:
-                        self.peer = await self.tg_client.resolve_peer(self.bot_username)
-
+                self.peer = await self.resolve_peer_with_retry(chat_id=self.bot_username, username=self.bot_username)
                 self.refer_id = choices([settings.REF_ID, get_link_code()], weights=[70, 30], k=1)[0] # this is sensitive data don’t change it (if ydk)
 
                 web_view = await self.tg_client.invoke(
@@ -101,6 +83,8 @@ class Tapper:
                 )
 
                 self.tg_account_info = await self.tg_client.get_me()
+                self.first_name = self.tg_account_info.first_name
+                self.last_name = self.tg_account_info.last_name if self.tg_account_info.last_name else ''
 
                 tg_web_data_parts = tg_web_data.split('&')
                 user_data = tg_web_data_parts[0].split('=')[1]
@@ -119,23 +103,23 @@ class Tapper:
             raise error
 
         except UserDeactivated:
-            logger.error(f"{self.session_name} | Your Telegram account has been deactivated. You may need to reactivate it.")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Your Telegram account has been deactivated. You may need to reactivate it.")
             await asyncio.sleep(delay=3)
 
         except UserDeactivatedBan:
-            logger.error(f"{self.session_name} | Your Telegram account has been banned. Contact Telegram support for assistance.")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Your Telegram account has been banned. Contact Telegram support for assistance.")
             await asyncio.sleep(delay=3)
 
         except UserRestricted as e:
-            logger.error(f"{self.session_name} | Your account is restricted. Details: {e}")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Your account is restricted. Details: {e}")
             await asyncio.sleep(delay=3)
 
         except Unauthorized:
-            logger.error(f"{self.session_name} | Session is Unauthorized. Check your API_ID and API_HASH")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Session is Unauthorized. Check your API_ID and API_HASH")
             await asyncio.sleep(delay=3)
 
         except Exception as error:
-            logger.error(f"{self.session_name} | Unknown error during Authorization: {error}")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Unknown error during Authorization: {error}")
             await asyncio.sleep(delay=3)
 
     async def check_proxy(self, http_client: aiohttp.ClientSession, proxy: Proxy) -> None:
@@ -144,9 +128,9 @@ class Tapper:
             ip = (await response.text())
             logger.info(f"{self.session_name} | Proxy IP: <g>{ip}</g>")
         except Exception as error:
-            logger.error(f"{self.session_name} | Proxy: {proxy} | Error: {error}")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Proxy: {proxy} | Error: {error}")
 
-    async def resolve_peer_with_retry(self, chat_id: int, username: str):
+    async def resolve_peer_with_retry(self, chat_id: int | str, username: str):
         """Resolve peer with retry mechanism in case of FloodWait."""
         peer = None
         try:
@@ -168,7 +152,7 @@ class Tapper:
             if not peer_found:
                 peer = await self.tg_client.resolve_peer(chat_id)
         if not peer:
-            logger.error(f"{self.session_name} | Could not resolve peer for <y>{username}</y>")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Could not resolve peer for <y>{username}</y>")
 
         return peer
 
@@ -189,7 +173,7 @@ class Tapper:
             await self.tg_client.archive_chats(chat_ids=[chat.id])
             logger.info(f"{self.session_name} | Channel <g>{chat.title}</g> successfully archived for channel <y>{username}</y>")
         except RPCError as e:
-            logger.error(f"{self.session_name} | Error muting or archiving chat <g>{chat.title}</g>: {e}")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Error muting or archiving chat <g>{chat.title}</g>: {e}")
 
     async def join_tg_channel(self, link: str):
         async with self.tg_client:
@@ -218,28 +202,47 @@ class Tapper:
                     await self.mute_and_archive_chat(chat, peer, username)
 
             except UserDeactivated:
-                logger.error(f"{self.session_name} | Your Telegram account has been deactivated. You may need to reactivate it.")
+                logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Your Telegram account has been deactivated. You may need to reactivate it.")
                 await asyncio.sleep(delay=3)
 
             except UserDeactivatedBan:
-                logger.error(f"{self.session_name} | Your Telegram account has been banned. Contact Telegram support for assistance.")
+                logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Your Telegram account has been banned. Contact Telegram support for assistance.")
                 await asyncio.sleep(delay=3)
 
             except UserRestricted as e:
-                logger.error(f"{self.session_name} | Your account is restricted. Details: {e}")
+                logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Your account is restricted. Details: {e}")
                 await asyncio.sleep(delay=3)
 
             except AuthKeyUnregistered:
-                logger.error(f"{self.session_name} | Authorization key is unregistered. Please log in again.")
+                logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Authorization key is unregistered. Please log in again.")
                 await asyncio.sleep(delay=3)
 
             except Unauthorized:
-                logger.error(f"{self.session_name} | Session is Unauthorized. Check your API_ID and API_HASH")
+                logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Session is Unauthorized. Check your API_ID and API_HASH")
                 await asyncio.sleep(delay=3)
 
             except Exception as error:
-                logger.error(f"{self.session_name} | Error while join tg channel: {error} {link}")
+                logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Error while join tg channel: {error} {link}")
                 await asyncio.sleep(delay=3)
+
+    async def change_name(self, symbol: str) -> bool:
+        async with self.tg_client:
+            try:
+                me = await self.tg_client.get_me()
+                first_name = me.first_name
+                last_name = me.last_name if me.last_name else ''
+                tg_name = f"{first_name} {last_name}"
+                
+                if symbol not in tg_name:
+                    changed_name = f'{first_name}{symbol}'
+                    await self.tg_client.update_profile(first_name=changed_name)
+                    logger.info(f"{self.session_name} | First name changed to <lc>{changed_name}</lc>")
+                    await asyncio.sleep(delay=randint(20, 30))
+                else:pass
+                return True
+            except Exception as error:
+                logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Error while changing tg name : {error}")
+                return False
 
     async def login(self, http_client: aiohttp.ClientSession, init_data: str, retry=0):
         try:
@@ -272,7 +275,7 @@ class Tapper:
                 await asyncio.sleep(delay=randint(5, 10))
                 return await self.login(http_client, init_data, retry=retry+1)
 
-            logger.error(f"{self.session_name} | Unknown error when logging: {error}")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Unknown error when logging: {error}")
             await asyncio.sleep(delay=randint(3, 7))
 
     async def get_all_tasks(self, http_client: aiohttp.ClientSession, retry=0):
@@ -300,7 +303,7 @@ class Tapper:
                 await asyncio.sleep(delay=randint(5, 10))
                 return await self.get_all_tasks(http_client, retry=retry+1)
 
-            logger.error(f"{self.session_name} | Unknown error when getting tasks: {error}")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Unknown error when getting tasks: {error}")
             await asyncio.sleep(delay=3)
 
     async def processing_tasks(self, http_client):
@@ -308,8 +311,8 @@ class Tapper:
             tasks = await self.get_all_tasks(http_client)
             if tasks:
                 for task in tasks:
-                    if not task["progress"]['claimed'] and task['code'] not in settings.DISABLED_TASKS:
-                        if "t.me" in str(task['data']):
+                    if not task["progress"]['claimed'] and task['code'] not in settings.DISABLED_TASKS and task["type"] in settings.TO_DO_TASK:
+                        if task['code'] == "telegram":
                             if settings.JOIN_TG_CHANNELS:
                                 channellink = task['data']
                                 logger.info(f"{self.session_name} | Performing TG subscription to <lc>{channellink}</lc>")
@@ -333,6 +336,11 @@ class Tapper:
                             else:
                                 complete_task = False
 
+                        elif task['code'] == "emojiName":
+                            status = await self.change_name(symbol='🐾')
+                            if status:
+                                complete_task = await self.verify_task(http_client, task['_id'], endpoint='/quests/completed')
+
                         else:
                             logger.info(f"{self.session_name} | Performing <lc>{task['title']}</lc> task")
                             complete_task = await self.verify_task(http_client, task['_id'], endpoint='/quests/completed')
@@ -350,7 +358,7 @@ class Tapper:
 
         except Exception as error:
             traceback.print_exc()
-            logger.error(f"{self.session_name} | Unknown error when processing tasks: {error}")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Unknown error when processing tasks: {error}")
             await asyncio.sleep(delay=3)
 
     async def submit_wallet(self, http_client: aiohttp.ClientSession, wallet_address: str, retry=0) -> bool | dict:
@@ -383,7 +391,7 @@ class Tapper:
                 await asyncio.sleep(delay=randint(5, 10))
                 return await self.submit_wallet(http_client, wallet_address, retry=retry+1)
 
-            logger.error(f"{self.session_name} | Unknown error when submitting wallet: {error}")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Unknown error when submitting wallet: {error}")
             await asyncio.sleep(delay=3)
             return False
 
@@ -404,10 +412,10 @@ class Tapper:
             }
 
         except ModuleNotFoundError:
-            logger.error(f"{self.session_name} | Error: The tonsdk library is not installed or not found.")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Error: The tonsdk library is not installed or not found.")
             return None, {}
         except Exception as e:
-            logger.error(f"{self.session_name} | Unknown error when generating wallets: {e}")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Unknown error when generating wallets: {e}")
             await asyncio.sleep(delay=3)
             return None, {}
 
@@ -433,7 +441,7 @@ class Tapper:
             return wallet_address
 
         except Exception as e:
-            logger.error(f"{self.session_name} | Unknown error when configuring wallets: {e}")
+            logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Unknown error when configuring wallets: {e}")
             await asyncio.sleep(delay=3)
             return False
 
@@ -527,7 +535,7 @@ class Tapper:
                     raise error
 
                 except Exception as error:
-                    logger.error(f"{self.session_name} | Unknown error: {error}")
+                    logger.error(f"<light-yellow>{self.session_name}</light-yellow> | Unknown error: {error}")
                     await asyncio.sleep(delay=randint(60, 120))
 
 def get_link_code() -> str:
