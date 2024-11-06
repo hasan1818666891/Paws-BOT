@@ -12,7 +12,7 @@
 | Multithreading                    |     ✅     |
 | Proxy binding to session          |     ✅     |
 | User-Agent binding to session     |     ✅     |
-| Support for `.tdata` and `.session` files | ✅     |
+| Support for `.session` files 	    |     ✅     |
 | Registration in bot               |     ✅     |
 | Auto-tasks                        |     ✅     |
 | Auto blind wallets                |     ✅     |
