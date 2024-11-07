@@ -483,15 +483,17 @@ class Tapper:
             if proxy:
                 await self.check_proxy(http_client=http_client, proxy=proxy)
 
+            tg_web_data = await self.get_tg_web_data(proxy=proxy)
+
+            if tg_web_data is None:
+                return
+
             token_live_time = randint(3500, 3600)
             while True:
                 try:
                     sleep_time = randint(settings.SLEEP_TIME[0], settings.SLEEP_TIME[1])
                     if time() - access_token_created_time >= token_live_time:
-                        tg_web_data = await self.get_tg_web_data(proxy=proxy)
-                        if tg_web_data is None:
-                            continue
-
+                        
                         login_data = await self.login(http_client=http_client, init_data=tg_web_data)
 
                         if not login_data:
