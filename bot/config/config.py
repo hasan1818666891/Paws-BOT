@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     AUTO_ADD_WALLET: bool = False
     
     REF_ID: str = 'acAO24ki'
-    DISABLED_TASKS: list[str] = ['invite', 'boost']
+    DISABLED_TASKS: list[str] = ['invite', 'boost', 'vote', 'voteup', 'votedown', 'mystery']
     TO_DO_TASK: list[str] = ['social', 'wallet', 'emojiName']
 
 
