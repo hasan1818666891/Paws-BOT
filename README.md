@@ -15,7 +15,7 @@
 | Support for `.session` files 	    |     ✅     |
 | Registration in bot               |     ✅     |
 | Auto-tasks                        |     ✅     |
-| Auto blind wallets                |     ✅     |
+| Auto connect wallets              |     ✅     |
 | Daily rewards                     |     ✅     |
 
 ---
